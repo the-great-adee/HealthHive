@@ -1,0 +1,63 @@
+{
+	"name": "omcs",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@headlessui/react": "^1.7.18",
+		"@heroicons/react": "^2.1.1",
+		"@testing-library/jest-dom": "^5.17.0",
+		"@testing-library/react": "^13.4.0",
+		"@testing-library/user-event": "^13.5.0",
+		"bcrypt": "^5.1.1",
+		"chai": "^4.3.7",
+		"chai-http": "^4.4.0",
+		"concurrently": "^8.2.2",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"flowbite-react": "^0.11.2",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.2.1",
+		"nodemailer": "^6.9.12",
+		"nodemon": "^3.1.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-hot-toast": "^2.4.1",
+		"react-router-dom": "^6.22.3",
+		"react-scripts": "5.0.1",
+		"selenium-webdriver": "^4.19.0",
+		"web-vitals": "^2.1.4"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"dev": "concurrently \"npm run start\" \"npm run server\"",
+		"test-backend": "mocha tests/**/*.test.js",
+		"test-frontend": "cd tests/frontend && echo \"LANDING PAGE TESTS\" && node landing_page_test.js && echo \"LOGIN PAGE TESTS\" && node login_page_test.js && echo \"PATIENT DASHBOARD TESTS\" && node patient_dashboard_test.js && echo \"DOCTOR DASHBOARD TESTS\" && node doctor_dashboard_test.js && echo \"APPOINTMENT AND FEEDBACK TESTS\" && node appointment_feedback_test.js && echo \"PRESCRIPTION AND FEEDBACK TESTS\" && node prescription_feedback_test.js && echo \"ALL FRONTEND TESTS COMPLETED\"",
+		"eject": "react-scripts eject",
+		"server": "nodemon backend/server.js"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^5.0.2",
+		"@types/jsonwebtoken": "^9.0.6",
+		"mocha": "^10.3.0",
+		"tailwindcss": "^3.4.1"
+	}
+}
