@@ -127,4 +127,64 @@ patientRouter.delete('/:id', authenticateToken, async (req, res) => {
 	}
 });
 
+
+patientRouter.post('/getStatistics', authenticateToken, async (req, res) => {
+	try {
+	  const { patient } = req.body;
+	  
+	  if (!patient) {
+		return res.status(400).json({ error: 'Patient email is required' });
+	  }
+  
+	  // Find the patient first to verify they exist
+	  const patientData = await Patient.findOne({ email: patient });
+	  
+	  if (!patientData) {
+		return res.status(404).json({ error: 'Patient not found' });
+	  }
+	  
+	  // Get current date for today's calculations
+	  const today = new Date();
+	  today.setHours(0, 0, 0, 0);  // Start of today
+	  
+	  // Get date for one month ago
+	  const oneMonthAgo = new Date();
+	  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+	  oneMonthAgo.setHours(0, 0, 0, 0);
+	  
+	  // Count of pending consultations
+	  const pendingConsultations = patientData.doctor.filter(doc => 
+		doc.status === 'consultation'
+	  ).length;
+	  
+	  // Count of upcoming appointments
+	  const upcomingAppointments = patientData.doctor.filter(doc => 
+		doc.status === 'appointment' && 
+		new Date(doc.date) >= today
+	  ).length;
+	  
+	  // Count of appointments/visits in the current month
+	  const thisMonth = patientData.doctor.filter(doc => 
+		doc.status === 'completed' && 
+		new Date(doc.date) >= oneMonthAgo
+	  ).length;
+	  
+	  // Count of total completed visits
+	  const totalCompleted = patientData.doctor.filter(doc => 
+		doc.status === 'completed'
+	  ).length;
+	  
+	  return res.status(200).json({
+		pendingConsultations,
+		upcomingAppointments,
+		thisMonth,
+		totalVisits: totalCompleted
+	  });
+	  
+	} catch (error) {
+	  console.error('Error getting patient statistics:', error);
+	  return res.status(500).json({ error: 'Failed to get statistics' });
+	}
+  });
+
 module.exports = patientRouter;

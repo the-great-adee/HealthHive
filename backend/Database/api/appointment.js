@@ -4,6 +4,7 @@ const applicationRouter = express.Router();
 const Appointment = require('../Models/Appointment');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
+const Doctor = require('../Models/Doctor');
 
 function authenticateToken(req, res, next) {
 	const token = req.headers['authorization'];
@@ -102,5 +103,66 @@ applicationRouter.post('/deleteAppointment', authenticateToken, async (req, res)
 		return res.status(500).json({ message: 'Internal server error' });
 	}
 });
+
+applicationRouter.post('/getStatistics', authenticateToken, async (req, res) => {
+    try {
+        const { doctor } = req.body;
+        
+        if (!doctor) {
+            console.error('No doctor email provided in the request body.');
+            return res.status(400).json({ message: 'Doctor email is required' });
+        }
+
+        // Get current date for today's calculations
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Calculate start of current week (Sunday as first day)
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+
+        // Log the doctor email to ensure it's correct
+        console.log(`Fetching statistics for doctor: ${doctor}`);
+
+        // Query for doctor by email
+        const doctorData = await Doctor.findOne({ email: doctor });
+
+        if (!doctorData) {
+            return res.status(404).json({ message: 'Doctor not found' });
+        }
+
+        // Count today's appointments
+        const todayAppointments = doctorData.patients.filter(patient => {
+            const appointmentDate = new Date(patient.completionDate);
+            return patient.status === 'appointment' &&
+                   appointmentDate >= today && appointmentDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+        }).length;
+
+        // Count pending consultations
+        const pendingConsultations = doctorData.patients.filter(patient => patient.status === 'consultation').length;
+
+        // Count this week's appointments and consultations
+        const thisWeek = doctorData.patients.filter(patient => {
+            const appointmentDate = new Date(patient.completionDate);
+            return patient.status === 'appointment' || patient.status === 'consultation' && appointmentDate >= startOfWeek;
+        }).length;
+
+        // Count total completed consultations
+        const totalCompleted = doctorData.patients.filter(patient => patient.status === 'completed').length;
+
+        return res.status(200).json({
+            todayAppointments,
+            pendingConsultations,
+            thisWeek,
+            totalCompleted
+        });
+    } catch (error) {
+        console.error('Error in getStatistics:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
 
 module.exports = applicationRouter;

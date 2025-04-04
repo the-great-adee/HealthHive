@@ -1,0 +1,52 @@
+/* For the status grid (replaces charts) */
+.status-container {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .status-box {
+    padding: 1.5rem;
+    border-radius: 6px;
+    text-align: center;
+    color: white;
+  }
+  
+  .status-box h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .status-box p {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .status-box.completed {
+    background-color: #4CAF50;
+  }
+  
+  .status-box.pending {
+    background-color: #2196F3;
+  }
+  
+  .status-box.cancelled {
+    background-color: #F44336;
+  }
+  
+  @media (max-width: 768px) {
+    .status-grid {
+      grid-template-columns: 1fr;
+    }
+  }
