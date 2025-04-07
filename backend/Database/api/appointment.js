@@ -61,16 +61,22 @@ applicationRouter.post('/getAppointmentsByDoctor', authenticateToken, async (req
 
 applicationRouter.post('/createAppointment', authenticateToken, async (req, res) => {
 	try {
-		const appointmentData = req.body;
-		const newAppointment = new Appointment(appointmentData);
-		const appointment = await newAppointment.save();
-
-		return res.status(200).json(appointment);
+	  const appointmentData = req.body;
+	  
+	  // Set default status if not provided
+	  if (!appointmentData.status) {
+		appointmentData.status = 'appointment';
+	  }
+	  
+	  const newAppointment = new Appointment(appointmentData);
+	  const appointment = await newAppointment.save();
+  
+	  return res.status(200).json(appointment);
 	} catch (error) {
-		console.error(error);
-		return res.status(500).json({ message: 'Internal server error' });
+	  console.error(error);
+	  return res.status(500).json({ message: 'Internal server error' });
 	}
-});
+  });
 
 applicationRouter.post('/updateAppointment', authenticateToken, async (req, res) => {
 	try {
