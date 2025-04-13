@@ -29,6 +29,28 @@ const doctorSchema = new mongoose.Schema(
 				feedback: { type: String, default: '' },
 			},
 		],
+		// New fields for medical store integration
+		canPrescribeProducts: { 
+			type: Boolean, 
+			default: true 
+		},
+		role: { 
+			type: String, 
+			enum: ['doctor', 'admin'], 
+			default: 'doctor' 
+		},
+		frequentlyPrescribedProducts: [
+			{
+				productId: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: 'Product'
+				},
+				count: { 
+					type: Number, 
+					default: 0 
+				}
+			}
+		]
 	},
 	{ collection: 'doctor' }
 );
